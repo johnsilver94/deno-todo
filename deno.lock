@@ -1,0 +1,50 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@db/mongo@0.33": "0.33.0",
+    "jsr:@lucsoft/web-bson@~0.3.1": "0.3.1",
+    "jsr:@std/assert@1": "1.0.7",
+    "jsr:@std/crypto@~0.220.1": "0.220.1",
+    "jsr:@std/dotenv@~0.225.2": "0.225.2",
+    "jsr:@std/encoding@~0.220.1": "0.220.1",
+    "jsr:@std/internal@^1.0.5": "1.0.5"
+  },
+  "jsr": {
+    "@db/mongo@0.33.0": {
+      "integrity": "89312b9db63ad733920901d60faf8c667aa3cb0a64b67f8c3e74601465273e3a",
+      "dependencies": [
+        "jsr:@lucsoft/web-bson",
+        "jsr:@std/crypto",
+        "jsr:@std/encoding"
+      ]
+    },
+    "@lucsoft/web-bson@0.3.1": {
+      "integrity": "dccad36fe5cc68286a4d3fe1993f7e7a81df0970c5946a5894dae9173adafe60"
+    },
+    "@std/assert@1.0.7": {
+      "integrity": "64ce9fac879e0b9f3042a89b3c3f8ccfc9c984391af19e2087513a79d73e28c3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/crypto@0.220.1": {
+      "integrity": "4cec173974f33398041a3f66cc2f9b2fcc4a5ceaddd0e60840887d3bb7289d23"
+    },
+    "@std/dotenv@0.225.2": {
+      "integrity": "e2025dce4de6c7bca21dece8baddd4262b09d5187217e231b033e088e0c4dd23"
+    },
+    "@std/encoding@0.220.1": {
+      "integrity": "8dc38dd72e36cd68857a5837e24eb09a64bb296b96c295239c75eec17d45d23f"
+    },
+    "@std/internal@1.0.5": {
+      "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@db/mongo@0.33",
+      "jsr:@std/assert@1",
+      "jsr:@std/dotenv@~0.225.2"
+    ]
+  }
+}
