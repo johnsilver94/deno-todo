@@ -2,10 +2,8 @@ import { todos } from "../db.ts";
 import { ObjectId } from "@db/mongo";
 
 export async function getTodos(): Promise<Response> {
-  console.log("🚀 ~ getTodos ~ getTodos:");
   try {
     const allTodos = await todos.find().toArray();
-    console.log("🚀 ~ getTodos ~ allTodos:", allTodos);
     return new Response(JSON.stringify(allTodos), {
       headers: { "Content-Type": "application/json" },
     });
