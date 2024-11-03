@@ -1,7 +1,9 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "denoland.vscode-deno",
+  "editor.inlayHints.enabled": "off",
+  "deno.enablePaths": ["./"],
   "deno.enable": true,
   "deno.lint": true,
-  "cSpell.words": ["todos", "typecheck", "esbenp", "autofetch"]
+  "cSpell.words": ["autofetch", "esbenp", "hono", "Mikro", "todos", "typecheck"]
 }
