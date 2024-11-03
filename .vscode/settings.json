@@ -5,5 +5,13 @@
   "deno.enablePaths": ["./"],
   "deno.enable": true,
   "deno.lint": true,
-  "cSpell.words": ["autofetch", "esbenp", "hono", "Mikro", "todos", "typecheck"]
+  "cSpell.words": [
+    "autofetch",
+    "esbenp",
+    "hono",
+    "Mikro",
+    "todos",
+    "typecheck",
+    "upserted"
+  ]
 }

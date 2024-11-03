@@ -1,5 +1,8 @@
-export type BaseModel = {
-  id: string;
+import { ObjectId } from "@db/mongo";
+
+export interface BaseModel {
+  _id?: ObjectId;
   createdAt: Date;
   updatedAt: Date;
-};
+  __v?: number;
+}

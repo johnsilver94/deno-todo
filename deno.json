@@ -8,16 +8,12 @@
   },
   "compilerOptions": {
     "jsx": "precompile",
-    "jsxImportSource": "hono/jsx",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "jsxImportSource": "hono/jsx"
   },
   "imports": {
+    "@db/mongo": "jsr:@db/mongo@^0.33.0",
     "@hono/hono": "jsr:@hono/hono@^4.6.8",
     "@hono/zod-validator": "npm:@hono/zod-validator@^0.4.1",
-    "@mikro-orm/core": "npm:@mikro-orm/core@^6.3.13",
-    "@mikro-orm/mongodb": "npm:@mikro-orm/mongodb@^6.3.13",
-    "@mikro-orm/seeder": "npm:@mikro-orm/seeder@^6.3.13",
     "@std/assert": "jsr:@std/assert@1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.2",
     "zod": "npm:zod@^3.23.8"

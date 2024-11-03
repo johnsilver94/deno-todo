@@ -1,31 +1,56 @@
 import { Context, Hono } from "@hono/hono";
+import { HTTPException } from "@hono/hono/http-exception";
 import { zValidator } from "@hono/zod-validator";
-import { db } from "../main.ts";
 import { ByIdDto } from "../shared/dto/by-id.dto.ts";
 import { CreateTodoDto } from "./dto/create-todo.dto.ts";
 import { UpdateTodoDto } from "./dto/update-todo.dto.ts";
+import { todoCollection } from "../plugins/mongo.plugin.ts";
+import { ObjectId } from "@db/mongo";
 
 const app = new Hono();
 
 app.get("/", async (c: Context) => {
-  const todos = await db.todo.findAll({});
-  return c.json(todos);
+  const todos = await todoCollection.find({}).toArray();
+  return c.json(
+    todos.map(({ _id, __v, ...todo }) => ({ id: _id, ...todo })),
+    200
+  );
 });
 app.get("/:id", zValidator("param", ByIdDto), async (c: Context) => {
   const { id } = c.req.valid("param");
-  const todo = await db.todo.findOneOrFail(id);
+  const todo = await todoCollection.findOne({ _id: new ObjectId(id) });
+
   if (!todo) {
-    return c.json({ message: "Todo not found" }, 404);
+    throw new HTTPException(404, {
+      message: "Todo with this id does not exists",
+    });
   }
-  return c.json(todo);
+
+  const { _id, __v, ...todoData } = todo;
+
+  return c.json({ id: _id, ...todoData }, 200);
 });
 app.post("/", zValidator("json", CreateTodoDto), async (c: Context) => {
-  const createTodoData = c.req.valid("json");
-  const todo = await db.todo.create(createTodoData, { partial: true });
+  const { title, description, completed } = c.req.valid("json");
+  const insertedId = await todoCollection.insertOne({
+    title,
+    description,
+    completed,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
 
-  await db.em.flush();
+  const newTodo = await todoCollection.findOne({ _id: insertedId });
 
-  return c.json(todo);
+  if (!newTodo) {
+    throw new HTTPException(404, {
+      message: "Todo with this id does not exists",
+    });
+  }
+
+  const { _id, __v, ...todoData } = newTodo;
+
+  return c.json({ id: _id, ...todoData }, 201);
 });
 
 app.patch(
@@ -35,20 +60,55 @@ app.patch(
   async (c: Context) => {
     const { id } = c.req.valid("param");
     const updateTodoData = c.req.valid("json");
-    console.log("🚀 ~ updateTodoData:", updateTodoData);
+    console.log("🚀 ~ updateTodoData:", updateTodoData, id);
+    const { matchedCount, modifiedCount, upsertedId } =
+      await todoCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: updateTodoData }
+      );
 
-    const todo = await db.todo.findOneOrFail(id);
-    console.log("🚀 ~ todo:", todo);
+    console.log("🚀 ~ updatedTodo:", matchedCount, modifiedCount);
 
-    if (!todo) {
-      return c.json({ message: "Todo not found" }, 404);
+    if (!matchedCount) {
+      console.info("No todo found");
     }
 
-    db.em.assign(todo, updateTodoData, { merge: true });
-    await db.em.flush();
+    if (modifiedCount === 0) {
+      console.info("No changes were made");
+    }
 
-    return c.json(todo);
+    if (upsertedId) {
+      console.info("Todo was upserted");
+    }
+
+    const updatedTodo = await todoCollection.findOne({ _id: new ObjectId(id) });
+
+    if (!updatedTodo) {
+      throw new HTTPException(404, {
+        message: "Todo with this id does not exists",
+      });
+    }
+
+    const { _id, __v, ...todoData } = updatedTodo;
+
+    return c.json({ id: _id, ...todoData }, 200);
   }
 );
+
+app.delete("/:id", zValidator("param", ByIdDto), async (c: Context) => {
+  const { id } = c.req.valid("param");
+
+  const deletedCount = await todoCollection.deleteOne({
+    _id: new ObjectId(id),
+  });
+
+  if (!deletedCount) {
+    throw new HTTPException(404, {
+      message: "Todo with this id does not exists",
+    });
+  }
+
+  return c.json({ success: true }, 200);
+});
 
 export default app;
