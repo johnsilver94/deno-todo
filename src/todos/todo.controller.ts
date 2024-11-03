@@ -111,4 +111,12 @@ app.delete("/:id", zValidator("param", ByIdDto), async (c: Context) => {
   return c.json({ success: true }, 200);
 });
 
+app.get("/incomplete/count", async (c: Context) => {
+  const incompleteTodosCount = await todoCollection.countDocuments({
+    completed: false,
+  });
+
+  return c.json({ count: incompleteTodosCount }, 200);
+});
+
 export default app;
